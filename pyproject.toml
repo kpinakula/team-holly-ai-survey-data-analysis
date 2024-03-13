@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "app"
+version = "0.1.0"
+description = ""
+authors = ["kpinakula <7438240+kpinakula@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "app"}]
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.9.1"
+pytest = "^7.4.2"
+pytest-watch = "^4.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
