@@ -8,7 +8,7 @@ check:
 	poetry run black . --check
 
 test:
-	poetry run pytest
+	poetry run pytest -vv
 
 test-watch:
 	poetry run ptw
