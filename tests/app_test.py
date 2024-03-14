@@ -13,7 +13,19 @@ class TestApp:
             parse_dates=["Timestamp"],
             date_format="%Y/%m/%d %H:%M:%S %p %Z",
             header=0,
-            names=["Timestamp", "work_area", "ai_tool_use_yes_or_no", "ai_tool_use_why_not", "ai_tools_frequently_used", "ai_tools_effectiveness_rating", "ai_tools_productivity_gains", "ai_tools_output_trust_rating", "ai_tools_challenges_limitations", "anything_else", "interest_in_sessions" ]
+            names=[
+                "Timestamp",
+                "work_area",
+                "ai_tool_use_yes_or_no",
+                "ai_tool_use_why_not",
+                "ai_tools_frequently_used",
+                "ai_tools_effectiveness_rating",
+                "ai_tools_productivity_gains",
+                "ai_tools_output_trust_rating",
+                "ai_tools_challenges_limitations",
+                "anything_else",
+                "interest_in_sessions",
+            ],
         )
 
     @pytest.mark.mandatory
@@ -32,21 +44,44 @@ class TestApp:
         datatest.validate(work_areas, str)
 
     @pytest.mark.mandatory
-    def x_test_ai_tools_effectiveness_rating_column_can_be_plotted(self, survey_responses):
+    def x_test_effectiveness_rating_column_can_be_plotted(self, survey_responses):
         effectiveness_ratings = survey_responses["ai_tools_effectiveness_rating"]
         effectiveness_ratings.plot()
         pyplot.show()
         datatest.validate(effectiveness_ratings, int)
 
     @pytest.mark.mandatory
-    def x_test_ai_tools_effectiveness_rating_column_can_be_plotted(self, survey_responses):
+    def x_test_effectiveness_rating_column_can_be_plotted(self, survey_responses):
         effectiveness_ratings = survey_responses["ai_tools_effectiveness_rating"]
-        effectiveness_ratings_bar_chart = survey_responses.groupby(effectiveness_ratings).size().plot.bar()
+        effectiveness_ratings_bar_chart = (
+            survey_responses.groupby(effectiveness_ratings).size().plot.bar()
+        )
 
-        effectiveness_ratings_bar_chart.bar_label(effectiveness_ratings_bar_chart.containers[0])
+        effectiveness_ratings_bar_chart.bar_label(
+            effectiveness_ratings_bar_chart.containers[0]
+        )
 
-        pyplot.xlabel("How would you rate the effectiveness of AI tools in improving your productivity or efficiency?")
+        pyplot.xlabel(
+            "How would you rate the effectiveness of AI tools in improving your productivity or efficiency?"
+        )
 
         pyplot.show()
 
         datatest.validate(effectiveness_ratings, int)
+
+    @pytest.mark.mandatory
+    def test_number_of_responses_is_as_expected(self, survey_responses):
+        effectiveness_ratings = survey_responses["ai_tools_effectiveness_rating"]
+        all_responses = effectiveness_ratings.size
+        empty_responses = effectiveness_ratings.isnull().sum()
+        real_responses = effectiveness_ratings.notnull().sum()
+        assert empty_responses == 9
+        assert all_responses == 27
+        assert real_responses == all_responses - empty_responses
+        datatest.validate(real_responses, int)
+
+    @pytest.mark.mandatory
+    def test_effectiveness_ratings_column_contains_integers(self, survey_responses):
+        effectiveness_ratings = survey_responses["ai_tools_effectiveness_rating"]
+        real_responses = effectiveness_ratings.notnull().sum()
+        datatest.validate(real_responses, int)
